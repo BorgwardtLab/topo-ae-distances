@@ -6,19 +6,20 @@ import torch.nn as nn
 from src.topology import PersistentHomologyCalculation #AlephPersistenHomologyCalculation, \
 from src.models import submodules
 from src.models.base import AutoencoderModel
-
+from src.models.submodules import RandomProjectionModel
 
 class TopologicallyRegularizedAutoencoder(AutoencoderModel):
     """Topologically regularized autoencoder."""
 
     def __init__(self, lam=1., autoencoder_model='ConvolutionalAutoencoder',
-                 ae_kwargs=None, toposig_kwargs=None):
+                 ae_kwargs=None, toposig_kwargs=None, input_distance='l2'):
         """Topologically Regularized Autoencoder.
 
         Args:
             lam: Regularization strength
             ae_kwargs: Kewords to pass to `ConvolutionalAutoencoder` class
             toposig_kwargs: Keywords to pass to `TopologicalSignature` class
+            input_distance: ['l2', 'rp']
         """
         super().__init__()
         self.lam = lam
@@ -28,12 +29,37 @@ class TopologicallyRegularizedAutoencoder(AutoencoderModel):
         self.autoencoder = getattr(submodules, autoencoder_model)(**ae_kwargs)
         self.latent_norm = torch.nn.Parameter(data=torch.ones(1),
                                               requires_grad=True)
-
+        #self.input_distance = self._get_input_distance_callable(input_distance)
+        if input_distance == 'l2':
+            self.input_distance = self._compute_euclidean_distance_matrix
+        elif input_distance == 'rp':
+            self.random_projection = RandomProjectionModel().to('cuda:0')
+            self.input_distance = self._random_projection_wrapper(self.random_projection)
+ 
     @staticmethod
-    def _compute_distance_matrix(x, p=2):
+    def _compute_euclidean_distance_matrix(x, p=2):
         x_flat = x.view(x.size(0), -1)
         distances = torch.norm(x_flat[:, None] - x_flat, dim=2, p=p)
         return distances
+    
+    def _random_projection_wrapper(self, rp):
+        def compute_distance(x):
+            x = rp(x)
+            return self._compute_euclidean_distance_matrix(x)
+        return compute_distance 
+     
+    def _get_input_distance_callable(self, name):
+        """
+        Return callable for computing input distance of the minibatch.
+        """
+        if name == 'l2':
+            return self._compute_euclidean_distance_matrix
+        elif name == 'rp':
+            return self._random_projection_wrapper(
+                RandomProjectionModel().to('cuda:0')
+            )
+        else: 
+            raise ValueError(f'{name} not among the valid input distances: l2, rp') 
 
     def forward(self, x):
         """Compute the loss of the Topologically regularized autoencoder.
@@ -47,7 +73,7 @@ class TopologicallyRegularizedAutoencoder(AutoencoderModel):
         """
         latent = self.autoencoder.encode(x)
 
-        x_distances = self._compute_distance_matrix(x)
+        x_distances = self.input_distance(x)
 
         dimensions = x.size()
         if len(dimensions) == 4:
@@ -61,7 +87,7 @@ class TopologicallyRegularizedAutoencoder(AutoencoderModel):
             # Else just take the max distance we got in the batch
             x_distances = x_distances / x_distances.max()
 
-        latent_distances = self._compute_distance_matrix(latent)
+        latent_distances = self._compute_euclidean_distance_matrix(latent)
         latent_distances = latent_distances / self.latent_norm
 
         # Use reconstruction loss of autoencoder
@@ -173,6 +199,7 @@ class TopologicalSignatureDistance(nn.Module):
         Returns:
             distance, dict(additional outputs)
         """
+
         pairs1 = self._get_pairings(distances1)
         pairs2 = self._get_pairings(distances2)
 

@@ -6,6 +6,7 @@ from sacred.utils import apply_backspaces_and_linefeeds
 import torch
 import numpy as np
 import pandas as pd
+from IPython import embed
 
 from src.callbacks import Callback, SaveReconstructedImages, \
     SaveLatentRepresentation, Progressbar
@@ -32,6 +33,7 @@ def cfg():
     batch_size = 64
     learning_rate = 1e-3
     weight_decay = 1e-5
+    input_distance = 'rp'
     val_size = 0.15
     early_stopping = 10
     device = 'cuda'
@@ -77,7 +79,7 @@ class NewlineCallback(Callback):
 
 
 @EXP.automain
-def train(n_epochs, batch_size, learning_rate, weight_decay, val_size,
+def train(n_epochs, batch_size, learning_rate, input_distance, weight_decay, val_size,
           early_stopping, device, quiet, evaluation, _run, _log, _seed, _rnd):
     """Sacred wrapped function to run training of model."""
     torch.manual_seed(_seed)
@@ -98,6 +100,12 @@ def train(n_epochs, batch_size, learning_rate, weight_decay, val_size,
     # pylint: disable=E1120
     model = model_config.get_instance()
     model.to(device)
+    
+    from IPython import embed; embed()    
+    #freeze projection layer if available
+    for name, param in model.named_parameters():
+        if 'input_distance' in name:
+            param.requires_grad = False 
 
     callbacks = [
         LogTrainingLoss(_run, print_progress=quiet),

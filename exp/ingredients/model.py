@@ -68,6 +68,15 @@ def TopoRegEdgeSymmetric():
         }
     }
 
+@ingredient.named_config
+def TopoAEProjections():
+    name = 'TopologicallyRegularizedAutoencoder'
+    parameters = {
+        'toposig_kwargs': {
+            'match_edges': 'symmetric'
+        },
+        'input_distance': 'rp'
+    }
 
 @ingredient.named_config
 def TopoRegEdgeRandom():
