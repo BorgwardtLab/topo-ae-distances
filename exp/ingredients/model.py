@@ -69,7 +69,7 @@ def TopoRegEdgeSymmetric():
     }
 
 @ingredient.named_config
-def TopoAEProjections():
+def TopoAERandomConv():
     name = 'TopologicallyRegularizedAutoencoder'
     parameters = {
         'toposig_kwargs': {

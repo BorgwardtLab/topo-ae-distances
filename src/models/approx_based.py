@@ -33,7 +33,7 @@ class TopologicallyRegularizedAutoencoder(AutoencoderModel):
         if input_distance == 'l2':
             self.input_distance = self._compute_euclidean_distance_matrix
         elif input_distance == 'rp':
-            self.random_projection = RandomProjectionModel().to('cuda:0')
+            self.random_projection = RandomProjectionModel(ae_kwargs['input_dims']).to('cuda:0')
             self.input_distance = self._random_projection_wrapper(self.random_projection)
  
     @staticmethod

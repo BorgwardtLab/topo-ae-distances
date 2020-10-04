@@ -1,4 +1,4 @@
-EXPERIMENT_CONFIGS_PATH := experiments
+EXPERIMENT_CONFIGS_PATH := projection_experiments
 # Look for all config files
 EXPERIMENT_CONFIGS := $(shell cd $(EXPERIMENT_CONFIGS_PATH) && find * -type f -name \*.json)
 

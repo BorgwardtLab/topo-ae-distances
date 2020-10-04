@@ -101,10 +101,9 @@ def train(n_epochs, batch_size, learning_rate, input_distance, weight_decay, val
     model = model_config.get_instance()
     model.to(device)
     
-    from IPython import embed; embed()    
     #freeze projection layer if available
     for name, param in model.named_parameters():
-        if 'input_distance' in name:
+        if 'random_projection' in name:
             param.requires_grad = False 
 
     callbacks = [

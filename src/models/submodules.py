@@ -237,12 +237,12 @@ class LinearAE(AutoencoderModel):
 
 class RandomProjectionModel(nn.Module):
     """Conv architecture (initially for CIFAR)."""
-    def __init__(self):
+    def __init__(self, input_dim=[3,32,32]):
         super().__init__()
         # Input size: [batch, 3, 32, 32]
         # Output size: [batch, 3, 32, 32]
         self.projection = nn.Sequential(
-            nn.Conv2d(3, 12, 4, stride=2, padding=1),            # [batch, 12, 16, 16]
+            nn.Conv2d(input_dim[0], 12, 4, stride=2, padding=1),            # [batch, 12, 16, 16]
             nn.ReLU(),
             nn.Conv2d(12, 24, 4, stride=2, padding=1),           # [batch, 24, 8, 8]
             nn.ReLU(),
@@ -252,7 +252,8 @@ class RandomProjectionModel(nn.Module):
     def forward(self, x):
         """Compute latent representation using convolutional net."""
         batch_dim = x.shape[0]
-        return self.projection(x).view(batch_dim, -1)
+        x = self.projection(x)
+        return x.view(batch_dim, -1)
 
 
 class DeepAE_COIL(AutoencoderModel):

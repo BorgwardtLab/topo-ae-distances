@@ -36,6 +36,18 @@ def TopoRegEdgeSymmetric():
         'model__parameters__toposig_kwargs__match_edges': 'symmetric',
     }
 
+def TopoAERandomConv():
+    train_module = 'train_model'
+    hyperparameter_space = {
+        'model__parameters__lam': ('Real', 0.01, 3, 'log-uniform'),
+        'batch_size': ('Integer', 16, 128)
+    }
+    overrides = {
+        'model__name': 'TopologicallyRegularizedAutoencoder',
+        'model__parameters__toposig_kwargs__match_edges': 'symmetric',
+        'model__parameters__input_distance': 'rp'
+    }
+
 # alternatives (from an early test phase) 
 def TopoReg():
     train_module = 'train_model'
@@ -61,6 +73,7 @@ def add_models(experiment):
     experiment.named_config(TopoReg)
     experiment.named_config(TopoRegVertex)
     experiment.named_config(TopoRegEdgeSymmetric)
+    experiment.named_config(TopoAERandomConv)
 
 def PCA():
     train_module = 'fit_competitor'
