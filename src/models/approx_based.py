@@ -45,7 +45,7 @@ class TopologicallyRegularizedAutoencoder(AutoencoderModel):
     def _random_projection_wrapper(self, rp):
         def compute_distance(x):
             x = rp(x)
-            return self._compute_euclidean_distance_matrix(x)
+            return self._compute_euclidean_distance_matrix(x, p=1)
         return compute_distance 
      
     def _get_input_distance_callable(self, name):
