@@ -42,8 +42,8 @@ class PerceptualLoss(nn.Module):
         """
         Reshape batched result to distance matrix
         """
-        D = torch.zeros(n, n, dtype=torch.float64, device=self.device)
-        D[inds[0], inds[1]] = x.double()
+        D = torch.zeros(n, n, dtype=torch.float32, device=self.device)
+        D[inds[0], inds[1]] = x
         return self._triu_to_full(D)
 
     def _triu_to_full(self, D):
@@ -51,7 +51,7 @@ class PerceptualLoss(nn.Module):
         Convert triu (upper triangular) matrix to full, symmetric matrix.
         Assumes square input matrix D
         """
-        diagonal = torch.eye(D.shape[0], dtype=torch.float64, 
+        diagonal = torch.eye(D.shape[0], dtype=torch.float32, 
                 device=self.device) * torch.diag(D) #eye matrix with diagonal entries of D 
         D = D + D.T - diagonal # add transpose minus diagonal values 
         # to move from upper triangular to full matrix 

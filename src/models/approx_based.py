@@ -12,7 +12,7 @@ from src.models.distances import PerceptualLoss
 class TopologicallyRegularizedAutoencoder(AutoencoderModel):
     """Topologically regularized autoencoder."""
 
-    def __init__(self, lam=1., autoencoder_model='ConvolutionalAutoencoder',
+    def __init__(self, lam=1., autoencoder_model='DeepAE',
                  ae_kwargs=None, toposig_kwargs=None, input_distance='l2'):
         """Topologically Regularized Autoencoder.
 
@@ -36,8 +36,8 @@ class TopologicallyRegularizedAutoencoder(AutoencoderModel):
             self.random_projection = RandomProjectionModel(ae_kwargs['input_dims']).to('cuda:0')
             self.input_distance = self._random_projection_wrapper(self.random_projection)
         elif input_distance in ['alex', 'vgg']:
-            self.input_distance = PerceptualLoss(device='cuda:0', net=input_distance)
-    
+            self.input_distance = PerceptualLoss(device='cuda:0', net=input_distance).to('cuda:0')
+
     @staticmethod
     def _compute_euclidean_distance_matrix(x, p=2):
         x_flat = x.view(x.size(0), -1)

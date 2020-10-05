@@ -79,6 +79,16 @@ def TopoAERandomConv():
     }
 
 @ingredient.named_config
+def TopoAEvgg():
+    name = 'TopologicallyRegularizedAutoencoder'
+    parameters = {
+        'toposig_kwargs': {
+            'match_edges': 'symmetric'
+        },
+        'input_distance': 'vgg'
+    }
+
+@ingredient.named_config
 def TopoRegEdgeRandom():
     name = 'TopologicallyRegularizedAutoencoder'
     parameters = {

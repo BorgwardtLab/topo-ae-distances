@@ -103,7 +103,7 @@ def train(n_epochs, batch_size, learning_rate, input_distance, weight_decay, val
     
     #freeze projection layer if available
     for name, param in model.named_parameters():
-        if 'random_projection' in name:
+        if any([word in name for word in ['random_projection', 'input_distance']]):
             param.requires_grad = False 
 
     callbacks = [
