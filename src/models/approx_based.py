@@ -7,6 +7,7 @@ from src.topology import PersistentHomologyCalculation #AlephPersistenHomologyCa
 from src.models import submodules
 from src.models.base import AutoencoderModel
 from src.models.submodules import RandomProjectionModel
+from src.models.distances import PerceptualLoss
 
 class TopologicallyRegularizedAutoencoder(AutoencoderModel):
     """Topologically regularized autoencoder."""
@@ -29,13 +30,14 @@ class TopologicallyRegularizedAutoencoder(AutoencoderModel):
         self.autoencoder = getattr(submodules, autoencoder_model)(**ae_kwargs)
         self.latent_norm = torch.nn.Parameter(data=torch.ones(1),
                                               requires_grad=True)
-        #self.input_distance = self._get_input_distance_callable(input_distance)
         if input_distance == 'l2':
             self.input_distance = self._compute_euclidean_distance_matrix
         elif input_distance == 'rp':
             self.random_projection = RandomProjectionModel(ae_kwargs['input_dims']).to('cuda:0')
             self.input_distance = self._random_projection_wrapper(self.random_projection)
- 
+        elif input_distance in ['alex', 'vgg']:
+            self.input_distance = PerceptualLoss(device='cuda:0', net=input_distance)
+    
     @staticmethod
     def _compute_euclidean_distance_matrix(x, p=2):
         x_flat = x.view(x.size(0), -1)
@@ -48,19 +50,6 @@ class TopologicallyRegularizedAutoencoder(AutoencoderModel):
             return self._compute_euclidean_distance_matrix(x)
         return compute_distance 
      
-    def _get_input_distance_callable(self, name):
-        """
-        Return callable for computing input distance of the minibatch.
-        """
-        if name == 'l2':
-            return self._compute_euclidean_distance_matrix
-        elif name == 'rp':
-            return self._random_projection_wrapper(
-                RandomProjectionModel().to('cuda:0')
-            )
-        else: 
-            raise ValueError(f'{name} not among the valid input distances: l2, rp') 
-
     def forward(self, x):
         """Compute the loss of the Topologically regularized autoencoder.
 
