@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ae_models=(TopoAERandomConv)
+ae_models=(TopoAERandomConv, TopoAEvgg)
 
 ## REAL WORLD
 

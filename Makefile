@@ -2,7 +2,7 @@ EXPERIMENT_CONFIGS_PATH := projection_experiments
 # Look for all config files
 EXPERIMENT_CONFIGS := $(shell cd $(EXPERIMENT_CONFIGS_PATH) && find * -type f -name \*.json)
 
-EXPERIMENT_OUTPUT_PATH := exp_runs/l1norm
+EXPERIMENT_OUTPUT_PATH := exp_runs
 # Output directories for the individual experiments (remove .json)
 RUN_EXPERIMENTS := $(foreach exp_config,$(EXPERIMENT_CONFIGS),$(EXPERIMENT_OUTPUT_PATH)/$(subst .json,,$(exp_config)))
 #$(info $$RUN_EXPERIMENTS is [${RUN_EXPERIMENTS}])
