@@ -33,7 +33,6 @@ def cfg():
     batch_size = 64
     learning_rate = 1e-3
     weight_decay = 1e-5
-    input_distance = 'rp'
     val_size = 0.15
     early_stopping = 10
     device = 'cuda'
@@ -79,7 +78,7 @@ class NewlineCallback(Callback):
 
 
 @EXP.automain
-def train(n_epochs, batch_size, learning_rate, input_distance, weight_decay, val_size,
+def train(n_epochs, batch_size, learning_rate, weight_decay, val_size,
           early_stopping, device, quiet, evaluation, _run, _log, _seed, _rnd):
     """Sacred wrapped function to run training of model."""
     torch.manual_seed(_seed)
@@ -96,6 +95,8 @@ def train(n_epochs, batch_size, learning_rate, input_distance, weight_decay, val
         dataset, val_size, _rnd)
     test_dataset = dataset_config.get_instance(train=False)
 
+    print(f'first instance shape: {dataset[0][0].shape}')
+    
     # Get model, sacred does some magic here so we need to hush the linter
     # pylint: disable=E1120
     model = model_config.get_instance()
@@ -103,7 +104,7 @@ def train(n_epochs, batch_size, learning_rate, input_distance, weight_decay, val
     
     #freeze projection layer if available
     for name, param in model.named_parameters():
-        if any([word in name for word in ['random_projection', 'input_distance']]):
+        if any([word in name for word in ['random_projection', 'input_distance', 'ortho']]):
             param.requires_grad = False 
 
     callbacks = [

@@ -465,10 +465,10 @@ class MLPAutoencoder(AutoencoderModel):
 
 
 class MLPAutoencoder_Spheres(AutoencoderModel):
-    def __init__(self, arch=[3, 32, 32, 2]):
+    def __init__(self, input_dim=101, arch=[3, 32, 32, 2]):
         super().__init__()
         self.encoder = nn.Sequential(
-            nn.Linear(101, 32),
+            nn.Linear(input_dim, 32),
             nn.BatchNorm1d(32),
             nn.ReLU(True),
             nn.Linear(32, 32),
@@ -483,7 +483,7 @@ class MLPAutoencoder_Spheres(AutoencoderModel):
             nn.Linear(32, 32),
             nn.BatchNorm1d(32),
             nn.ReLU(True),
-            nn.Linear(32, 101)
+            nn.Linear(32, input_dim)
         )
         self.reconst_error = nn.MSELoss()
 

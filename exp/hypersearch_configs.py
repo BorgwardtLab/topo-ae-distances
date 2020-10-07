@@ -7,6 +7,10 @@ def FashionMNIST():
 def Spheres():
     overrides = {'dataset__name': 'Spheres'}
 
+def Spheres1000():
+    overrides = {'dataset__name': 'Spheres',
+                 'dataset__parameters__d': 1000} 
+
 def CIFAR():
     overrides = {'dataset__name': 'CIFAR'}
 
@@ -15,6 +19,8 @@ def add_datasets(experiment):
     experiment.named_config(FashionMNIST)
     experiment.named_config(Spheres)
     experiment.named_config(CIFAR)
+    experiment.named_config(Spheres1000)
+
 
 def Vanilla():
     train_module = 'train_model'
@@ -60,6 +66,18 @@ def TopoAEvgg():
         'model__parameters__input_distance': 'vgg'
     }
 
+def TopoAEOrtho():
+    train_module = 'train_model'
+    hyperparameter_space = {
+        'model__parameters__lam': ('Real', 0.01, 3, 'log-uniform'),
+        'batch_size': ('Integer', 16, 128)
+    }
+    overrides = {
+        'model__name': 'TopologicallyRegularizedAutoencoder',
+        'model__parameters__toposig_kwargs__match_edges': 'symmetric',
+        'model__parameters__input_distance': 'ortho'
+    }
+
 # alternatives (from an early test phase) 
 def TopoReg():
     train_module = 'train_model'
@@ -87,6 +105,7 @@ def add_models(experiment):
     experiment.named_config(TopoRegEdgeSymmetric)
     experiment.named_config(TopoAERandomConv)
     experiment.named_config(TopoAEvgg)
+    experiment.named_config(TopoAEOrtho)
 
 def PCA():
     train_module = 'fit_competitor'
