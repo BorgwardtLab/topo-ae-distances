@@ -6,8 +6,9 @@ import torch.nn as nn
 from src.topology import PersistentHomologyCalculation #AlephPersistenHomologyCalculation, \
 from src.models import submodules
 from src.models.base import AutoencoderModel
-from src.models.submodules import RandomProjectionModel
+from src.models.submodules import RandomProjectionModel, OrthoProjectionModel
 from src.models.distances import PerceptualLoss
+import geotorch
 
 class TopologicallyRegularizedAutoencoder(AutoencoderModel):
     """Topologically regularized autoencoder."""
@@ -33,11 +34,13 @@ class TopologicallyRegularizedAutoencoder(AutoencoderModel):
         if input_distance == 'l2':
             self.input_distance = self._compute_euclidean_distance_matrix
         elif input_distance == 'rp':
-            self.random_projection = RandomProjectionModel(ae_kwargs['input_dims']).to('cuda:0')
+            self.random_projection = RandomProjectionModel(ae_kwargs['input_dims']) #.to('cuda:0')
             self.input_distance = self._random_projection_wrapper(self.random_projection)
         elif input_distance in ['alex', 'vgg']:
-            self.input_distance = PerceptualLoss(device='cuda:0', net=input_distance).to('cuda:0')
-
+            self.input_distance = PerceptualLoss(device='cuda:0', net=input_distance) #.to('cuda:0')
+        elif input_distance == 'ortho':
+            self.ortho_projection = OrthoProjectionModel(ae_kwargs['input_dims']) #.to('cuda:0')
+            self.input_distance = self._random_projection_wrapper(self.ortho_projection) 
     @staticmethod
     def _compute_euclidean_distance_matrix(x, p=2):
         x_flat = x.view(x.size(0), -1)

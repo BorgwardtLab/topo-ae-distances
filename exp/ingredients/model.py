@@ -89,6 +89,28 @@ def TopoAEvgg():
     }
 
 @ingredient.named_config
+def TopoAEOrtho():
+    name = 'TopologicallyRegularizedAutoencoder'
+    parameters = {
+        'toposig_kwargs': {
+            'match_edges': 'symmetric'
+        },
+        'input_distance': 'ortho'
+    }
+@ingredient.named_config
+def TopoAEOrthoSpheres():
+    name = 'TopologicallyRegularizedAutoencoder'
+    parameters = {
+        'toposig_kwargs': {
+            'match_edges': 'symmetric'
+        },
+        'autoencoder_model': 'MLPAutoencoder_Spheres', 
+        'input_distance': 'ortho'
+    }
+
+
+
+@ingredient.named_config
 def TopoRegEdgeRandom():
     name = 'TopologicallyRegularizedAutoencoder'
     parameters = {
