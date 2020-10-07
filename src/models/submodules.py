@@ -4,7 +4,7 @@ import torch
 import torch.nn as nn
 from torch.distributions import Normal
 import torch.nn.functional as F
-
+import geotorch
 from .base import AutoencoderModel
 # Hush the linter: Warning W0221 corresponds to a mismatch between parent class
 # method signature and the child class
@@ -260,13 +260,12 @@ class OrthoProjectionModel(nn.Module):
     def __init__(self, input_dims=(101)):
         super().__init__()
         n_input_dims = np.prod(input_dims)
+        linear = nn.Linear(n_input_dims, 20) 
+        geotorch.orthogonal(linear, "weight")  
         self.projection = nn.Sequential(
             View((-1, n_input_dims)),
-            geotorch.orthogonal( 
-                nn.Linear(n_input_dims, 20), 
-            "weight"),
-        )
-   
+            linear 
+            )
     def forward(self, x):
         """Compute orthogonal linear projection"""
         return self.projection(x)

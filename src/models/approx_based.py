@@ -8,7 +8,6 @@ from src.models import submodules
 from src.models.base import AutoencoderModel
 from src.models.submodules import RandomProjectionModel, OrthoProjectionModel
 from src.models.distances import PerceptualLoss
-import geotorch
 
 class TopologicallyRegularizedAutoencoder(AutoencoderModel):
     """Topologically regularized autoencoder."""
@@ -39,7 +38,10 @@ class TopologicallyRegularizedAutoencoder(AutoencoderModel):
         elif input_distance in ['alex', 'vgg']:
             self.input_distance = PerceptualLoss(device='cuda:0', net=input_distance) #.to('cuda:0')
         elif input_distance == 'ortho':
-            self.ortho_projection = OrthoProjectionModel(ae_kwargs['input_dims']) #.to('cuda:0')
+            if 'input_dims' in ae_kwargs.keys():
+                self.ortho_projection = OrthoProjectionModel(ae_kwargs['input_dims']) #.to('cuda:0')
+            else:
+                self.ortho_projection = OrthoProjectionModel()
             self.input_distance = self._random_projection_wrapper(self.ortho_projection) 
     @staticmethod
     def _compute_euclidean_distance_matrix(x, p=2):
