@@ -257,18 +257,31 @@ class RandomProjectionModel(nn.Module):
 
 class OrthoProjectionModel(nn.Module):
     """Linear, orthogonal architecture."""
-    def __init__(self, input_dims=(101)):
+    def __init__(self, input_dims=(101), n_projections=30, out_dim=20):
         super().__init__()
         n_input_dims = np.prod(input_dims)
-        linear = nn.Linear(n_input_dims, 20) 
-        geotorch.orthogonal(linear, "weight")  
-        self.projection = nn.Sequential(
-            View((-1, n_input_dims)),
-            linear 
+        #linear = nn.Linear(n_input_dims, out_dim)
+        self.n_projections = n_projections
+        for i in range(n_projections):
+            setattr(self, "fc%d" % i, nn.Linear(n_input_dims, out_dim)) 
+            geotorch.orthogonal( 
+                getattr(self, "fc%d" % i), 
+                "weight"
             )
+        self.flatten = View((-1, n_input_dims))
+        #self.projection = nn.Sequential(
+        #    View((-1, n_input_dims)),
+        #    linear 
+        #    )
+
     def forward(self, x):
         """Compute orthogonal linear projection"""
-        return self.projection(x)
+        outputs = []
+        x = self.flatten(x)
+        for i in range(self.n_projections):
+            output = getattr(self, "fc%d" % i)(x)
+            outputs.append(output)
+        return outputs 
 
 class DeepAE_COIL(AutoencoderModel):
     """1000-500-250-2-250-500-1000."""

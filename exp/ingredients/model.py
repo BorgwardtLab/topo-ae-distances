@@ -104,11 +104,21 @@ def TopoAEOrthoSpheres():
         'toposig_kwargs': {
             'match_edges': 'symmetric'
         },
-        'autoencoder_model': 'MLPAutoencoder_Spheres', 
+        'autoencoder_model': 'MLPAutoencoder_Spheres',
         'input_distance': 'ortho'
+ 
     }
 
-
+@ingredient.named_config
+def TopoAESpheres():
+    name = 'TopologicallyRegularizedAutoencoder'
+    parameters = {
+        'toposig_kwargs': {
+            'match_edges': 'symmetric'
+        },
+        'autoencoder_model': 'MLPAutoencoder_Spheres', 
+        'input_distance': 'l2'
+    }
 
 @ingredient.named_config
 def TopoRegEdgeRandom():

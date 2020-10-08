@@ -29,7 +29,7 @@ EXP.captured_out_filter = apply_backspaces_and_linefeeds
 
 @EXP.config
 def cfg():
-    n_epochs = 10
+    n_epochs = 50
     batch_size = 64
     learning_rate = 1e-3
     weight_decay = 1e-5
@@ -38,14 +38,14 @@ def cfg():
     device = 'cuda'
     quiet = False
     evaluation = {
-        'active': False,
+        'active': True,
         'k_min': 10,
         'k_max': 200,
         'k_step': 10,
         'evaluate_on': 'test',
         'online_visualization': False,
         'save_latents': True,
-        'save_training_latents': False
+        'save_training_latents': True
     }
 
 
