@@ -194,7 +194,6 @@ class DeepAE(AutoencoderModel):
         reconst_error = self.reconst_error(x, x_reconst)
         return reconst_error, {'reconstruction_error': reconst_error}
 
-
 class LinearAE(AutoencoderModel):
     """input dim - 2 - input dim."""
     def __init__(self, input_dims=(1, 28, 28)):
@@ -233,6 +232,51 @@ class LinearAE(AutoencoderModel):
         x_reconst = self.decode(latent)
         reconst_error = self.reconst_error(x, x_reconst)
         return reconst_error, {'reconstruction_error': reconst_error}
+
+class LinearAEOrtho(AutoencoderModel):
+    """input dim - 2 - input dim."""
+    def __init__(self, input_dims=(1, 28, 28)):
+        super().__init__()
+        self.input_dims = input_dims
+        n_input_dims = np.prod(input_dims)
+
+        #Define linear encoding layer with orthogonal constraint:
+        linear = nn.Linear(n_input_dims, 2)
+        geotorch.orthogonal( linear, "weight")
+
+        self.encoder = nn.Sequential(
+            View((-1, n_input_dims)),
+            linear, 
+        )
+        self.decoder = nn.Sequential(
+            nn.Linear(2, n_input_dims),
+            View((-1,) + tuple(input_dims)),
+        )
+        self.reconst_error = nn.MSELoss()
+
+    def encode(self, x):
+        """Compute latent representation using convolutional autoencoder."""
+        return self.encoder(x)
+
+    def decode(self, z):
+        """Compute reconstruction using convolutional autoencoder."""
+        return self.decoder(z)
+
+    def forward(self, x):
+        """Apply autoencoder to batch of input images.
+
+        Args:
+            x: Batch of images with shape [bs x channels x n_row x n_col]
+
+        Returns:
+            tuple(reconstruction_error, dict(other errors))
+
+        """
+        latent = self.encode(x)
+        x_reconst = self.decode(latent)
+        reconst_error = self.reconst_error(x, x_reconst)
+        return reconst_error, {'reconstruction_error': reconst_error}
+
 
 
 class RandomProjectionModel(nn.Module):
@@ -534,13 +578,13 @@ class MLPAutoencoder_Spheres(AutoencoderModel):
 
 
 class LinearAE_Spheres(AutoencoderModel):
-    def __init__(self):
+    def __init__(self, input_dim=101):
         super().__init__()
         self.encoder = nn.Sequential(
-            nn.Linear(101, 2)
+            nn.Linear(input_dim, 2)
         )
         self.decoder = nn.Sequential(
-            nn.Linear(2, 101)
+            nn.Linear(2, input_dim)
         )
         self.reconst_error = nn.MSELoss()
 
@@ -566,6 +610,42 @@ class LinearAE_Spheres(AutoencoderModel):
         x_reconst = self.decode(latent)
         reconst_error = self.reconst_error(x, x_reconst)
         return reconst_error, {'reconstruction_error': reconst_error}
+
+class LinearAEOrtho_Spheres(AutoencoderModel):
+    def __init__(self, input_dim=101):
+        super().__init__()
+        
+        self.encoder = nn.Linear(input_dim, 2)
+        geotorch.orthogonal(self.encoder, "weight")
+ 
+        self.decoder = nn.Sequential(
+            nn.Linear(2, input_dim)
+        )
+        self.reconst_error = nn.MSELoss()
+
+    def encode(self, x):
+        """Compute latent representation using convolutional autoencoder."""
+        return self.encoder(x)
+
+    def decode(self, z):
+        """Compute reconstruction using convolutional autoencoder."""
+        return self.decoder(z)
+
+    def forward(self, x):
+        """Apply autoencoder to batch of input images.
+
+        Args:
+            x: Batch of images with shape [bs x channels x n_row x n_col]
+
+        Returns:
+            tuple(reconstruction_error, dict(other errors))
+
+        """
+        latent = self.encode(x)
+        x_reconst = self.decode(latent)
+        reconst_error = self.reconst_error(x, x_reconst)
+        return reconst_error, {'reconstruction_error': reconst_error}
+
 
 
 

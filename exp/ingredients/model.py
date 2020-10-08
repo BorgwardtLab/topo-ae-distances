@@ -60,12 +60,14 @@ def TopoRegSorted():
 
 
 @ingredient.named_config
-def TopoRegEdgeSymmetric():
+def TopoAE():
     name = 'TopologicallyRegularizedAutoencoder'
     parameters = {
         'toposig_kwargs': {
             'match_edges': 'symmetric'
-        }
+        },
+        'autoencoder_model': 'DeepAE',
+        'input_distance': 'l2'
     }
 
 @ingredient.named_config
@@ -75,6 +77,7 @@ def TopoAERandomConv():
         'toposig_kwargs': {
             'match_edges': 'symmetric'
         },
+        'autoencoder_model': 'DeepAE',
         'input_distance': 'rp'
     }
 
@@ -85,6 +88,7 @@ def TopoAEvgg():
         'toposig_kwargs': {
             'match_edges': 'symmetric'
         },
+        'autoencoder_model': 'DeepAE',
         'input_distance': 'vgg'
     }
 
@@ -97,6 +101,7 @@ def TopoAEOrtho():
         },
         'input_distance': 'ortho'
     }
+
 @ingredient.named_config
 def TopoAEOrthoSpheres():
     name = 'TopologicallyRegularizedAutoencoder'
@@ -108,6 +113,51 @@ def TopoAEOrthoSpheres():
         'input_distance': 'ortho'
  
     }
+
+@ingredient.named_config
+def TopoPCAOrtho():
+    name = 'TopologicallyRegularizedAutoencoder'
+    parameters = {
+        'toposig_kwargs': {
+            'match_edges': 'symmetric'
+        },
+        'autoencoder_model': 'LinearAEOrtho',
+        'input_distance': 'l2'
+    }
+
+@ingredient.named_config
+def TopoPCA():
+    name = 'TopologicallyRegularizedAutoencoder'
+    parameters = {
+        'toposig_kwargs': {
+            'match_edges': 'symmetric'
+        },
+        'autoencoder_model': 'LinearAE',
+        'input_distance': 'l2'
+    }
+
+@ingredient.named_config
+def TopoPCAOrthoSpheres():
+    name = 'TopologicallyRegularizedAutoencoder'
+    parameters = {
+        'toposig_kwargs': {
+            'match_edges': 'symmetric'
+        },
+        'autoencoder_model': 'LinearAEOrtho_Spheres',
+        'input_distance': 'l2'
+    }
+
+@ingredient.named_config
+def TopoPCASpheres():
+    name = 'TopologicallyRegularizedAutoencoder'
+    parameters = {
+        'toposig_kwargs': {
+            'match_edges': 'symmetric'
+        },
+        'autoencoder_model': 'LinearAE_Spheres',
+        'input_distance': 'l2'
+    }
+
 
 @ingredient.named_config
 def TopoAESpheres():
