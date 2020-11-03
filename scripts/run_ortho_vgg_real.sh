@@ -1,13 +1,9 @@
 #!/bin/bash
 
-dataset=$1
+dataset=FashionMNIST
 methods=(TopoAEvgg)
-cifar=CIFAR
-if [$dataset = $cifar]; then
-    input_dim='[3,32,32]'
-else
-    input_dim='[1,28,28]'
-fi
+#input_dim='[3,32,32]'
+input_dim='[1,28,28]'
 
 for method in ${methods[@]};
     do 
