@@ -2,7 +2,7 @@
 jobname=highdimspheres
 
 datasets=(MNIST FashionMNIST)
-methods=(TopoAE TopoPCA TopoPCAOrtho TopoAERandomConv)
+methods=(TopoAE TopoAERandomConv)
 input_dim1='[1,28,28]'
 input_dim2='[3,32,32]'
 
