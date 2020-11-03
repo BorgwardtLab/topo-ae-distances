@@ -9,6 +9,7 @@ input_dim2='[3,32,32]'
 for method in ${methods[@]};
     do
     for dataset in ${datasets[@]};
+        do
         output_path=exp_runs/train_model/real_world/${dataset}/${method}
         mkdir -p $output_path
         output_log=${output_path}/run.log
