@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "topo-ae-projections"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+torch = "1.6.0"
+geotorch = "^0.1.0"
+torchvision = "^0.7.0"
+pandas = "^1.1.4"
+matplotlib = "^3.3.2"
+tqdm = "^4.51.0"
+sklearn = "^0.0"
+tadasets = "^0.0.4"
+lpips = "^0.1.3"
+sacred = "0.7.4"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
