@@ -13,7 +13,7 @@ for method in ${methods[@]};
         output_path=exp_runs/train_model/real_world/${dataset}/${method}
         mkdir -p $output_path
         output_log=${output_path}/run.log
-        pipenv run python -m exp.train_model -F ${output_path} with model.${method} dataset.${dataset} model.parameters.ae_kwargs.input_dims=${input_dim1}
+        poetry run python -m exp.train_model -F ${output_path} with model.${method} dataset.${dataset} model.parameters.ae_kwargs.input_dims=${input_dim1}
     done
 done
 
@@ -24,6 +24,6 @@ for method in ${methods[@]};
     output_path=exp_runs/train_model/real_world/${dataset}/${method}
     mkdir -p $output_path
     output_log=${output_path}/run.log
-    pipenv run python -m exp.train_model -F ${output_path} with model.${method} dataset.${dataset} model.parameters.ae_kwargs.input_dims=${input_dim2}
+    poetry run python -m exp.train_model -F ${output_path} with model.${method} dataset.${dataset} model.parameters.ae_kwargs.input_dims=${input_dim2}
 done
 
