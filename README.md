@@ -6,8 +6,19 @@ Here, we investigate whether domain-specific distance functions in the input spa
 
 ## References
 
-Please use the following BibTeX code to cite our original [paper](https://arxiv.org/abs/1906.00722),
-which was presented at [ICML 2020](https://icml.cc/Conferences/2020):
+Please use the following BibTex code to cite our Neurips 2020 workshop [paper](https://openreview.net/pdf?id=P3dZuOUnyEY):  
+
+```  
+@InProceedings{moor2020challenging,
+    title       = {Challenging Euclidean Topological Autoencoders},
+    author      = {Moor, Michael and Horn, Max and Borgwardt, Karsten and Rieck, Bastian},
+    booktitle   = {NeurIPS 2020 Workshop on Topological Data Analysis and Beyond},
+    year        = {2020},
+    url         = {https://openreview.net/forum?id=P3dZuOUnyEY},
+}
+```  
+
+Furthermore, the original ICML 2020 [paper](https://arxiv.org/abs/1906.00722) proposing Topological Autoencoders in the first place, can be cited as follows:
 
 ```
 @InProceedings{Moor19Topological,
