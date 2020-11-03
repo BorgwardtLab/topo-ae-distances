@@ -6,7 +6,7 @@ import torch.nn as nn
 from src.topology import PersistentHomologyCalculation #AlephPersistenHomologyCalculation, \
 from src.models import submodules
 from src.models.base import AutoencoderModel
-from src.models.submodules import RandomProjectionModel
+from src.models.submodules import RandomProjectionModel, OrthoProjectionModel
 from src.models.distances import PerceptualLoss
 
 class TopologicallyRegularizedAutoencoder(AutoencoderModel):
@@ -33,23 +33,40 @@ class TopologicallyRegularizedAutoencoder(AutoencoderModel):
         if input_distance == 'l2':
             self.input_distance = self._compute_euclidean_distance_matrix
         elif input_distance == 'rp':
-            self.random_projection = RandomProjectionModel(ae_kwargs['input_dims']).to('cuda:0')
+            self.random_projection = RandomProjectionModel(ae_kwargs['input_dims']) #.to('cuda:0')
             self.input_distance = self._random_projection_wrapper(self.random_projection)
         elif input_distance in ['alex', 'vgg']:
-            self.input_distance = PerceptualLoss(device='cuda:0', net=input_distance).to('cuda:0')
-
+            self.input_distance = PerceptualLoss(device='cuda:0', net=input_distance) #.to('cuda:0')
+        elif input_distance == 'ortho':
+            if 'input_dims' in ae_kwargs.keys():
+                self.ortho_projection = OrthoProjectionModel(ae_kwargs['input_dims']) #.to('cuda:0')
+            elif 'input_dim' in ae_kwargs.keys():
+                self.ortho_projection = OrthoProjectionModel(ae_kwargs['input_dim']) 
+            else:
+                self.ortho_projection = OrthoProjectionModel()
+            self.input_distance = self._multi_projection_wrapper(self.ortho_projection, p=2) 
     @staticmethod
     def _compute_euclidean_distance_matrix(x, p=2):
         x_flat = x.view(x.size(0), -1)
         distances = torch.norm(x_flat[:, None] - x_flat, dim=2, p=p)
         return distances
     
-    def _random_projection_wrapper(self, rp):
+    def _random_projection_wrapper(self, rp, p=1):
         def compute_distance(x):
             x = rp(x)
-            return self._compute_euclidean_distance_matrix(x, p=1)
+            return self._compute_euclidean_distance_matrix(x, p=p)
         return compute_distance 
-     
+   
+    def _multi_projection_wrapper(self, rp, p=1):
+        def compute_distance(x):
+            distances = []
+            projections = rp(x) #returns list of projections
+            for projection in projections:     
+                d = self._compute_euclidean_distance_matrix(projection, p=p)
+                distances.append(d)
+            return torch.stack(distances).mean(dim=0)  
+        return compute_distance 
+ 
     def forward(self, x):
         """Compute the loss of the Topologically regularized autoencoder.
 

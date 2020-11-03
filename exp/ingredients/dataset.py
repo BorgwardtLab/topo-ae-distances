@@ -44,6 +44,55 @@ def Spheres():
     parameters = {
     }
 
+@ingredient.named_config
+def Spheres500():
+    name ='Spheres'
+    parameters = {
+        'd': 500 
+    }
+
+@ingredient.named_config
+def Spheres1k():
+    name ='Spheres'
+    parameters = {
+        'd': 1000
+    }
+
+@ingredient.named_config
+def Spheres2k():
+    name ='Spheres'
+    parameters = {
+        'd': 2000
+    }
+
+@ingredient.named_config
+def Spheres3k():
+    name ='Spheres'
+    parameters = {
+        'd': 3000
+    }
+
+@ingredient.named_config
+def Spheres5k():
+    name ='Spheres'
+    parameters = {
+        'd': 5000
+    }
+
+@ingredient.named_config
+def Spheres10k():
+    name ='Spheres'
+    parameters = {
+        'd': 10000
+    }
+
+@ingredient.named_config
+def Spheres100k():
+    name ='Spheres'
+    parameters = {
+        'd': 100000
+    }
+
 @ingredient.capture
 def get_instance(name, parameters, _log, **kwargs):
     """Get an instance of a model according to parameters in the configuration.
