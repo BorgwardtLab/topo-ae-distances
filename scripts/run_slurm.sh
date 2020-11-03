@@ -6,6 +6,7 @@ methods=(TopoAE TopoAERandomConv TopoAEvgg)
 input_dim1='[1,28,28]'
 input_dim2='[3,32,32]'
 
+# MNIST FashionMNIST
 for method in ${methods[@]};
     do 
     for dataset in ${datasets[@]};
