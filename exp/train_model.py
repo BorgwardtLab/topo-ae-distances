@@ -6,7 +6,6 @@ from sacred.utils import apply_backspaces_and_linefeeds
 import torch
 import numpy as np
 import pandas as pd
-from IPython import embed
 
 from src.callbacks import Callback, SaveReconstructedImages, \
     SaveLatentRepresentation, Progressbar

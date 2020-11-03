@@ -9,8 +9,6 @@ import matplotlib
 import matplotlib.pyplot as plt
 from .custom_shapes import dsphere 
 
-from IPython import embed
-
 def create_sphere_dataset(n_samples=500, d=100, n_spheres=11, r=5, plot=False, seed=42):
     np.random.seed(seed)
 
