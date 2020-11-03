@@ -26,20 +26,13 @@ which was presented at [ICML 2020](https://icml.cc/Conferences/2020):
 
 ## Setup
 In order to reproduce the results indicated in the workshop paper simply setup an
-environment using the provided `Pipfile` and `pipenv` and run the experiments
-using the provided makefile:
-
+environment using poetry: 
 ```bash
-pipenv install --skip-lock  
+poetry install  
 ```
 
-Alternatively, the exact versions used in this project can be accessed in ```requirements.txt```, however
-this pip freeze contains a superset of all necessary libraries. To install it, run
-```bash
-pipenv install -r requirements.txt --skip-lock
-```
-  
 ## Running the methods:
+Make sure you have internet access once to be able to download the datasets, and also the vgg model (via the lpips package)
 
 In case a slurm cluster is available, simply run:  
 ```bash  
